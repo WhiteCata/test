@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+		*{padding: 0;margin: 0;}
+		a{text-decoration: none;}
+		li{list-style: none;}
+			.container{
+				position: relative;
+				overflow: hidden;
+				width: 300px;
+				height: 300px;
+				border: 1px solid red;
+				margin: 0 auto;
+			}
+			.box{
+				position: absolute;
+				width: 1800px;
+				height: 100px;
+			}
+			.box img{
+				width: 300px;
+				border: 0;
+				display: block;
+				float: left;
+			}
+			ul{
+				position: absolute;
+				bottom: 10px;
+				right: 30px;
+				width: 150px;
+				height: 20px;
+			}
+			li{
+				float: left;
+			}
+			li a{
+				display: block;
+				width: 20px;
+				height: 20px;
+				padding: 0 5px;
+				border: 1px solid blue;
+				border-radius:20px;
+				color: red;
+				text-align: center;
+				line-height: 20px;
+				
+			}
+			li a.active{
+				background-color: black;
+			}
+			.arrow{
+				width: 30px;
+				height: 30px;
+				border: 1px solid green;
+				background-color: pink;
+				text-align: center;
+				line-height: 30px;
+				color: yellow;
+			}
+			 .left{
+				position: absolute;
+				top: 50%;
+				left 10px;
+			}
+			 .right{
+				position: absolute;
+				top: 50%;
+				right: 0px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="box" style="left: -300px;">
+				<img src="../img/4.png"/>
+				<img src="../img/1.png"/>
+				<img src="../img/2.png"/>
+				<img src="../img/3.png"/>
+				<img src="../img/4.png"/>
+				<img src="../img/1.png"/>
+			</div>
+			<ul id="ul">
+				<li><a href="#" class="active" id="1">1</a></li>
+				<li><a href="#" id="2">2</a></li>
+				<li><a href="#" id="3">3</a></li>
+				<li><a href="#" id="4">4</a></li>
+			</ul>
+			
+			<a href="#" class="arrow left">&lt;</a>
+			<a href="#" class="arrow right">&gt;</a>
+			
+		</div>
+		
+		<script type="text/javascript">
+			window.onload= function(){
+				
+				var oContainer = document.querySelector(".container");
+				var oBox = document.querySelector(".box");
+				var oLi = document.getElementById("ul").getElementsByTagName("a");
+				var prev = document.querySelector(".left");
+				var next = document.querySelector(".right");
+				
+				
+				
+				var index = 1;
+				prev.onclick = function(){
+//					animate(-300);
+					animate(300);
+					if(index==1){
+						index=4;
+					}else{
+						index--;
+					}
+					showButton();
+				}
+//				左减
+				next.onclick = function(){
+					animate(-300);
+					if(index==4){
+						index=1;
+					}else{
+						index++;
+					}
+					showButton();
+				}
+//				右加
+				
+				
+//				function animate(offset){
+//					oBox.style.left = parseInt(oBox.style.left)+offset+"px";
+//					
+//					
+//					if(parseInt(oBox.style.left)<-1200){
+//						oBox.style.left=-300+"px";
+//					}
+//					
+//					if(parseInt(oBox.style.left)>-300){
+//						oBox.style.left = 1200 +"px";
+//					}
+//				}
+
+
+					function animate(offset){
+						state = true;
+						var time = 300;
+						var interval = 10;
+						var speed = offset/(time/interval);
+						var newLeft = parseInt(oBox.style.left)+offset;
+						
+						function go(){
+							if((speed<0&&parseInt(oBox.style.left)>newLeft)||(speed>0&&parseInt(oBox.style.left)<newLeft)){
+							oBox.style.left = parseInt(oBox.style.left)+speed+'px';
+							setTimeout(go,interval);
+							}else{
+								state=false;
+								oBox.style.left=newLeft+'px';
+								if(parseInt(oBox.style.left)<-1200){
+									oBox.style.left=-300+"px";
+								}
+								
+								if(parseInt(oBox.style.left)>-300){
+									oBox.style.left = 1200 +"px";
+								}
+							}
+						}
+						go();
+					}
+				
+				function showButton(){
+					for(var i=0;i<oLi.length;i++){
+						if(oLi[i].className=="active"){
+							oLi[i].className=" ";
+							break;
+						}
+					}
+//					console.log("test");
+					oLi[index-1].className="active";
+				}
+				
+				for(var i= 0;i<oLi.length;i++){
+					oLi[i].onclick = function(){
+						var id = parseInt(this.getAttribute("id"));
+						 //减去原来的index值，乘以-600 得到偏移量，调用偏移函数
+						var offset = (id-index)* -300;
+						if(state){
+							return;
+						}
+						 //调用偏移函数
+						animate(offset);
+						  //把index的值更新
+						index = id;
+						 //调用改变背景色函数
+						showButton();
+					}
+				}
+				 //通过定时器来不断的点击 next按钮 来实现轮播效果.
+             function play(){
+                 timer2 = setInterval(function(){
+                     next.onclick();
+                 },3000);
+             }
+             //停止轮播函数，清除定时器
+            function stop(){
+                 clearInterval(timer2);
+             }
+             //给.pic添加移进悬浮和移出事件
+             oContainer.onmouseover = stop;
+             oContainer.onmouseout = play;
+             //第一次访问页面开始轮播
+             play();    
+				
+					
+			}
+			
+			
+		</script>
+	</body>
+</html>
